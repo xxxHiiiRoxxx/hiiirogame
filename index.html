@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>${title}</title>
+    <meta name="description" content="${description}" />
+    <style>${style}</style>
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div id="score-display">スコア: <span id="current-score">0</span></div>
+         <div id="nextFruitDisplay"> 次:
+        <div id="next-fruit-img"></div>
+        <span id="next-fruit-text"></span>
+    </div>
+
+        <div id="game-over-overlay">
+            <div id="game-over-content">
+                <h2>ゲームオーバー！</h2>
+                <p>最終スコア: <span id="final-score">0</span></p>
+                <button id="restart-button">もう一度プレイ</button>
+            </div>
+        </div>
+    </div>
+    <script>${script}</script>
+</body>
+</html>
