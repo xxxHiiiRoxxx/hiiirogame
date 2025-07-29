@@ -112,3 +112,40 @@ body {
 #restart-button:hover {
     background-color: #4cae4c;
 }
+#start-screen {
+    width: 100vw; /* 画面の幅いっぱい */
+    height: 100vh; /* 画面の高さいっぱい */
+    display: flex;
+    flex-direction: column; /* 要素を縦に並べる */
+    justify-content: center; /* 垂直方向中央揃え */
+    align-items: center; /* 水平方向中央揃え */
+    background-color: #2c3e50;
+    color: white;
+}
+
+#start-screen h1 {
+    font-size: 3em;
+    margin-bottom: 40px;
+}
+
+#start-screen button {
+    font-size: 1.5em;
+    padding: 15px 30px;
+    margin: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background-color: #e74c3c;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+#start-screen button:hover {
+    background-color: #c0392b;
+}
+
+/* game-containerはJavaScriptで表示を切り替える */
+#game-container {
+    /* display: none; はHTML側で設定済み */
+    /* 必要であれば他のスタイルもここに記述 */
+}

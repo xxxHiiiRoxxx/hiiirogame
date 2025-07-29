@@ -4,18 +4,23 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>ひいろのゲーム</title>
+    <title>ゲーム選択画面</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="game-container">
+
+    <div id="start-screen">
+        <h1>ゲーム選択</h1>
+        <button id="start-game-1">スイカゲーム</button>
+        <button id="start-game-2">物理ゲーム</button>
+    </div>
+    <div id="game-container" style="display: none;">
         <canvas id="gameCanvas"></canvas>
         <div id="score-display">スコア: <span id="current-score">0</span></div>
          <div id="nextFruitDisplay"> 次:
-        <div id="next-fruit-img"></div>
-        <span id="next-fruit-text"></span>
-    </div>
-
+            <div id="next-fruit-img"></div>
+            <span id="next-fruit-text"></span>
+        </div>
         <div id="game-over-overlay">
             <div id="game-over-content">
                 <h2>ゲームオーバー！</h2>
@@ -24,6 +29,7 @@
             </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script src="main.js"></script>
 </body>
 </html>
