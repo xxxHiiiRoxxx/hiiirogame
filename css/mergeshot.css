@@ -1,0 +1,129 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #222;
+    font-family: Arial, sans-serif;
+    color: #eee;
+    overflow: hidden; /* スクロールバーが出ないように */
+}
+
+#start-screen {
+    text-align: center;
+}
+
+#start-screen h1 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+#start-screen button {
+    display: block;
+    width: 200px;
+    padding: 15px;
+    margin: 10px auto;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#start-screen button:hover {
+    background-color: #45a049;
+}
+
+#game-container {
+    position: relative;
+    width: 320px; /* Canvasと合わせる */
+    height: 480px; /* Canvasと合わせる */
+    border: 2px solid #555;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: #f7f7f7; /* Matter.jsの背景色と同じか、透明に */
+}
+
+canvas {
+    display: block; /* canvasの下に余白ができないように */
+}
+
+#score-display, #nextFruitDisplay {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #333;
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+#nextFruitDisplay {
+    top: 10px;
+    right: 10px;
+    left: auto; /* 右寄せにするため */
+    display: flex;
+    align-items: center;
+}
+
+#next-fruit-img {
+    width: 30px; /* 仮のサイズ */
+    height: 30px; /* 仮のサイズ */
+    background-color: lightgray; /* 仮の色 */
+    border-radius: 50%; /* 丸くする */
+    margin-left: 5px;
+}
+
+
+#game-over-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    display: none; /* 初期状態では非表示 */
+}
+
+#game-over-content {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+#game-over-content h2 {
+    margin-top: 0;
+    color: #ffc107;
+}
+
+#game-over-content p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+#restart-button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#restart-button:hover {
+    background-color: #0056b3;
+}

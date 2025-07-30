@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startGame1Button.addEventListener('click', () => {
         startScreen.style.display = 'none'; // スタート画面を隠す
         gameContainer.style.display = 'block'; // ゲーム画面を表示
-        loadGameScript('suicagame/script.js'); // 前のゲームのスクリプトを読み込む
+        loadGameScript('suicagame/suicagame_main.js'); // 前のゲームのスクリプトを読み込む
     });
 
     // 「物理ゲーム」ボタンが押されたときの処理
@@ -48,7 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Matter.jsを読み込んでから、物理ゲームのスクリプトを読み込む
         loadMatterJS(() => {
-            loadGameScript('physics_game.js'); 
+          console.log('マージスタート');
+            loadGameScript('mergeshot/mergeshot_main.js'); 
         });
     });
 });

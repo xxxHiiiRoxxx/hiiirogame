@@ -142,13 +142,33 @@ function startGame() {
     currentScore = 0;
     scoreDisplay.textContent = currentScore; // スコア表示をリセット
     gameOver = false;
-    gameOverOverlay.style.display = 'none'; // ゲームオーバー画面を非表示
-    generateNextFruit(); // 最初の次の果物を生成
+    gameOverOverlay.style.display = 'none'; //ゲームオーバー画面を非表示
+   
+    loadCss('css/suica.css');
+    
+    generateNextFruit();//最初の次の果物を生成
     droppingFruit = null; // 落下中の果物をリセット
     mouseX = CANVAS_WIDTH / 2; // マウスX座標もリセット
     lastFrameTime = performance.now(); // 最初のフレーム時間を設定
     requestAnimationFrame(gameLoop); // ゲームループを開始
 }
+
+// CSSファイルを動的に読み込むヘルパー関数
+function loadCss(filename) {
+    const head = document.getElementsByTagName('head')[0];
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = filename;
+    link.id = 'dynamic-game-css'; // 後で削除するためにIDを付けておく
+    // 既存の動的に読み込まれたCSSがあれば削除
+    const existingCss = document.getElementById('dynamic-game-css');
+    if (existingCss) {
+        existingCss.remove();
+    }
+    head.appendChild(link);
+}
+
 
 // スコアを更新する関数
 function updateScore(points) {

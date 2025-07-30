@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>ゲーム選択画面</title>
-    <link rel="stylesheet" href="style.css" />
-</head>
+    <link rel="stylesheet" href="css/common.css" /> </head>
 <body>
 
     <div id="start-screen">
         <h1>ゲーム選択</h1>
         <button id="start-game-1">スイカゲーム</button>
-        <button id="start-game-2">物理ゲーム</button>
+        <button id="start-game-2">マージショット</button>
     </div>
     <div id="game-container" style="display: none;">
         <canvas id="gameCanvas"></canvas>
@@ -30,6 +29,7 @@
         </div>
     </div>
 
+    <script src="matter.js"></script>
     <script src="main.js"></script>
-</body>
+    </body>
 </html>
