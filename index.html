@@ -1,35 +1,25 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <title>ゲーム選択画面</title>
-    <link rel="stylesheet" href="css/common.css" /> </head>
+  <meta charset="UTF-8">
+  <title>Merge Shot ポータル</title>
+  <link rel="stylesheet" href="css/common.css">
+</head>
 <body>
+  <header>
+    <h1>HiiiRo game's</h1>
+  </header>
 
-    <div id="start-screen">
-        <h1>ゲーム選択</h1>
-        <button id="start-game-1">スイカゲーム</button>
-        <button id="start-game-2">マージショット</button>
-    </div>
-    <div id="game-container" style="display: none;">
-        <canvas id="gameCanvas"></canvas>
-        <div id="score-display">スコア: <span id="current-score">0</span></div>
-         <div id="nextFruitDisplay"> 次:
-            <div id="next-fruit-img"></div>
-            <span id="next-fruit-text"></span>
-        </div>
-        <div id="game-over-overlay">
-            <div id="game-over-content">
-                <h2>ゲームオーバー！</h2>
-                <p>最終スコア: <span id="final-score">0</span></p>
-                <button id="restart-button">もう一度プレイ</button>
-            </div>
-        </div>
-    </div>
+  <main>
+    <ul class="game-list">
+      <li><a href="/suicagame/suicagame.html">スイカゲーム</a></li>
+      <li><a href="game2/game2.html">Merge Shot テスト中</a></li>
+      <li><a href="game3/game3.html">coming soon</a></li>
+    </ul>
+  </main>
 
-    <script src="matter.js"></script>
-    <script src="main.js"></script>
-    </body>
+  <footer>
+    &copy; 2025 HiiiRo game's LABO
+  </footer>
+</body>
 </html>

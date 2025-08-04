@@ -1,54 +1,59 @@
 /* common.css */
 
+/* 全体のリセットと基本スタイル */
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #f0f8ff; /* アリスブルー */
-    font-family: 'Arial', sans-serif;
-    overflow: hidden; /* スクロールバーを非表示 */
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #1e1e2f;
+  color: #ffffff;
 }
 
-#start-screen {
-    width: 100vw; /* 画面の幅いっぱい */
-    height: 100vh; /* 画面の高さいっぱい */
-    display: flex;
-    flex-direction: column; /* 要素を縦に並べる */
-    justify-content: center; /* 垂直方向中央揃え */
-    align-items: center; /* 水平方向中央揃え */
-    background-color: #222; /* 背景色 */
-    color: #eee;
+/* ヘッダー */
+header {
+  text-align: center;
+  padding: 30px 0;
+  background-color: #2c2c3c;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-#start-screen h1 {
-    font-size: 3em;
-    margin-bottom: 40px;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+header h1 {
+  margin: 0;
+  font-size: 2.5em;
 }
 
-#start-screen button {
-    background-color: #4CAF50; /* 緑 */
-    color: white;
-    padding: 15px 30px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.5em;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+/* ゲームリスト */
+ul.game-list {
+  list-style: none;
+  padding: 0;
+  margin: 40px auto;
+  max-width: 600px;
 }
 
-#start-screen button:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
+ul.game-list li {
+  margin: 20px 0;
+  text-align: center;
 }
 
-/* game-containerはJavaScriptで表示を切り替える */
-#game-container {
-    /* display: none; はHTML側で設定済み */
-    /* 必要であれば他のスタイルもここに記述 */
+ul.game-list a {
+  display: inline-block;
+  padding: 12px 24px;
+  font-size: 18px;
+  background-color: #0078d4;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+ul.game-list a:hover {
+  background-color: #005fa3;
+}
+
+/* フッター */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  color: #aaa;
 }

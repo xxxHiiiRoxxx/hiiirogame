@@ -47,9 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
         gameContainer.style.display = 'block'; // ゲーム画面を表示
         
         // Matter.jsを読み込んでから、物理ゲームのスクリプトを読み込む
-        loadMatterJS(() => {
-          console.log('マージスタート');
-            loadGameScript('mergeshot/mergeshot_main.js'); 
-        });
+        loadGameScript('mergeshot/mergeshot_main.js'); 
     });
 });

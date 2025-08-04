@@ -13,7 +13,6 @@ const nextFruitImg = document.getElementById('next-fruit-img'); // next-fruit-im
 const nextFruitTextDisplay = document.getElementById('next-fruit-text'); // 次の果物のテキスト表示用要素を追加 (HTML側に追加が必要です)
 const gameOverOverlay = document.getElementById('game-over-overlay');
 const finalScoreDisplay = document.getElementById('final-score');
-const restartButton = document.getElementById('restart-button');
 
 // キャンバスのサイズ設定
 canvas.width = CANVAS_WIDTH;
@@ -337,10 +336,6 @@ canvas.addEventListener('click', () => {
         droppingFruit = null; // 落下させたので、次の果物を準備するまでクリア
         generateNextFruit(); // 次の果物を生成
     }
-});
-// リスタートボタンのクリックイベントリスナー
-restartButton.addEventListener('click', () => {
-    startGame(); // ゲームをリスタート
 });
 
 // ゲーム開始処理の呼び出し
