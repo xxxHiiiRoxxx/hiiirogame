@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大砲ブロック崩しゲーム</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #001122, #003366);
+            overflow: hidden;
+            touch-action: none;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: block;
+            background: transparent;
+        }
+        .ui {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 18px;
+            z-index: 100;
+        }
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+            z-index: 200;
+        }
+        .restart-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .restart-btn:hover {
+            background: #e55a2b;
+        }
+    </style>
+</head>
+<body>
+    <div class="ui">
+        <div>スコア: <span id="score">0</span></div>
+        <div>レベル: <span id="level">1</span></div>
+    </div>
+
+```
+<div class="game-over" id="gameOver">
+    <h2>ゲームオーバー</h2>
+    <p>最終スコア: <span id="finalScore">0</span></p>
+    <button class="restart-btn" onclick="restartGame()">再スタート</button>
+</div>
+
+<script>
+    // Matter.jsのモジュール
+    const { Engine, Render, World, Bodies, Body, Events, Vector, Constraint } = Matter;
+
+    // ゲーム設定
+    const canvas = document.createElement('canvas');
+    document.body.appendChild(canvas);
+    
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    // エンジンとレンダラーの設定
+    const engine = Engine.create();
+    const render = Render.create({
+        canvas: canvas,
+        engine: engine,
+        options: {
+            width: width,
+            height: height,
+            wireframes: false,
+            background: 'transparent',
+            showAngleIndicator: false,
+            showDebug: false
+        }
+    });
+
+    // ゲーム変数
+    let score = 0;
+    let level = 1;
+    let gameRunning = true;
+    let cannon = null;
+    let cannonAngle = 0;
+    let balls = [];
+    let blocks = [];
+    let lastFireTime = 0;
+    let fireInterval = 1000; // 1秒間隔
+    let blockSpeed = 0.5;
+    let lastBlockSpawn = 0;
+    let blockSpawnInterval = 3000; // 3秒間隔
+    let aimLine = null;
+
+    // 大砲の作成
+    function createCannon() {
+        const cannonX = width / 2;
+        const cannonY = 80;
+        cannon = Bodies.rectangle(cannonX, cannonY, 60, 20, {
+            isStatic: true,
+            render: {
+                fillStyle: '#8B4513'
+            }
+        });
+        
+        // 照準線の作成
+        createAimLine();
+        
+        World.add(engine.world, cannon);
+    }
+
+    // 照準線の作成
+    function createAimLine() {
+        const cannonX = width / 2;
+        const cannonY = 80;
+        const lineLength = 150;
+        
+        // 照準線の終点を計算
+        const endX = cannonX + Math.sin(cannonAngle) * lineLength;
+        const endY = cannonY + Math.cos(cannonAngle) * lineLength;
+        
+        if (aimLine) {
+            World.remove(engine.world, aimLine);
+        }
+        
+        // 細い矩形として照準線を作成
+        const lineX = cannonX + Math.sin(-cannonAngle) * lineLength / 2;
+        const lineY = cannonY + Math.cos(-cannonAngle) * lineLength / 2;
+        
+        aimLine = Bodies.rectangle(lineX, lineY, 3, lineLength, {
+            isStatic: true,
+            angle: cannonAngle,
+            render: {
+                fillStyle: '#ff6b35',
+                strokeStyle: '#ff6b35',
+                lineWidth: 2
+            },
+            isSensor: true // 衝突しないようにする
+        });
+        
+        World.add(engine.world, aimLine);
+    }
+
+    // ボールの作成と発射
+    function fireBall() {
+        if (!gameRunning) return;
+        
+        const cannonX = width / 2;
+        const cannonY = 80;
+        const ball = Bodies.circle(cannonX, cannonY, 8, {
+            render: {
+                fillStyle: '#ff6b35'
+            },
+            restitution: 0.8,
+            friction: 0.001
+        });
+
+        // 大砲の角度に基づいて速度を設定
+        const power = 15;
+        const vx = Math.sin(-cannonAngle) * power;
+        const vy = Math.cos(-cannonAngle) * power;
+        
+        Body.setVelocity(ball, { x: vx, y: vy });
+        
+        balls.push(ball);
+        World.add(engine.world, ball);
+        
+        // 古いボールを削除（画面外に出た場合）
+        balls = balls.filter(b => {
+            if (b.position.y > height + 100 || b.position.x < -100 || b.position.x > width + 100) {
+                World.remove(engine.world, b);
+                return false;
+            }
+            return true;
+        });
+    }
+
+    // ブロックの作成
+    function createBlock(x, y) {
+        const colors = ['#ff4757', '#3742fa', '#2ed573', '#ffa502', '#ff6348'];
+        const block = Bodies.rectangle(x, y, 80, 40, {
+            render: {
+                fillStyle: colors[Math.floor(Math.random() * colors.length)]
+            },
+            isStatic: true
+        });
+        blocks.push(block);
+        World.add(engine.world, block);
+    }
+
+    // ブロック列の生成
+    function spawnBlockRow() {
+        const blocksPerRow = Math.floor(width / 90);
+        const startX = (width - (blocksPerRow * 90)) / 2 + 45;
+        
+        for (let i = 0; i < blocksPerRow; i++) {
+            if (Math.random() < 0.7) { // 70%の確率でブロック生成
+                createBlock(startX + i * 90, height - 50);
+            }
+        }
+    }
+
+    // ブロックの上昇
+    function moveBlocksUp() {
+        blocks.forEach(block => {
+            Body.translate(block, { x: 0, y: -blockSpeed });
+            
+            // ブロックが上まで到達したらゲームオーバー
+            if (block.position.y < 150) {
+                gameOver();
+            }
+        });
+    }
+
+    // 衝突検出
+    Events.on(engine, 'collisionStart', (event) => {
+        event.pairs.forEach(pair => {
+            const { bodyA, bodyB } = pair;
+            
+            // ボールとブロックの衝突
+            if ((balls.includes(bodyA) && blocks.includes(bodyB)) ||
+                (balls.includes(bodyB) && blocks.includes(bodyA))) {
+                
+                const block = blocks.includes(bodyA) ? bodyA : bodyB;
+                const ball = balls.includes(bodyA) ? bodyA : bodyB;
+                
+                // ブロックを削除
+                const blockIndex = blocks.indexOf(block);
+                if (blockIndex > -1) {
+                    blocks.splice(blockIndex, 1);
+                    World.remove(engine.world, block);
+                    score += 10;
+                    updateUI();
+                }
+            }
+        });
+    });
+
+    // タッチ/マウス操作
+    let isDragging = false;
+    let startX = 0;
+
+    function handleStart(e) {
+        if (!gameRunning) return;
+        isDragging = true;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        startX = clientX;
+    }
+
+    function handleMove(e) {
+        if (!gameRunning || !isDragging) return;
+        e.preventDefault();
+        
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const deltaX = clientX - startX;
+        
+        // 大砲の角度を調整（-60度から60度まで）
+        cannonAngle = Math.max(-Math.PI/3, Math.min(Math.PI/3, deltaX * -0.01));
+        
+        
+        // 大砲の回転
+        Body.setAngle(cannon, cannonAngle);
+        
+        // 照準線の更新
+        createAimLine();
+    }
+
+    function handleEnd(e) {
+        isDragging = false;
+    }
+
+    // イベントリスナー
+    canvas.addEventListener('mousedown', handleStart);
+    canvas.addEventListener('mousemove', handleMove);
+    canvas.addEventListener('mouseup', handleEnd);
+    canvas.addEventListener('touchstart', handleStart);
+    canvas.addEventListener('touchmove', handleMove);
+    canvas.addEventListener('touchend', handleEnd);
+
+    // UI更新
+    function updateUI() {
+        document.getElementById('score').textContent = score;
+        document.getElementById('level').textContent = level;
+        
+
+        // レベルアップ
+        const newLevel = Math.floor(score / 100) + 1;
+        if (newLevel > level) {
+            level = newLevel;
+            blockSpeed += 0.2;
+            fireInterval = Math.max(500, fireInterval - 50);
+        }
+    }
+
+    // ゲームオーバー
+    function gameOver() {
+        gameRunning = false;
+        document.getElementById('finalScore').textContent = score;
+        document.getElementById('gameOver').style.display = 'block';
+    }
+
+    // ゲーム再開
+    function restartGame() {
+        // ワールドをクリア
+        World.clear(engine.world);
+        Engine.clear(engine);
+        
+        // 変数をリセット
+        score = 0;
+        level = 1;
+        gameRunning = true;
+        balls = [];
+        blocks = [];
+        cannonAngle = 0;
+        blockSpeed = 0.5;
+        fireInterval = 1000;
+        lastFireTime = 0;
+        lastBlockSpawn = 0;
+        aimLine = null;
+        
+        // UIを非表示
+        document.getElementById('gameOver').style.display = 'none';
+        
+        // ゲームを再初期化
+        initGame();
+    }
+
+    // ゲーム初期化
+    function initGame() {
+        // 重力設定
+        engine.world.gravity.y = 0.8;
+        
+        // 壁の作成
+        const walls = [
+            Bodies.rectangle(0, height/2, 10, height, { isStatic: true, render: { visible: false } }),
+            Bodies.rectangle(width, height/2, 10, height, { isStatic: true, render: { visible: false } }),
+            Bodies.rectangle(width/2, height, width, 10, { isStatic: true, render: { visible: false } })
+        ];
+        World.add(engine.world, walls);
+        
+        // 大砲作成
+        createCannon();
+        
+        // 初期ブロック生成
+        spawnBlockRow();
+        
+        updateUI();
+    }
+
+    // ゲームループ
+    function gameLoop() {
+        if (!gameRunning) return;
+        
+        const currentTime = Date.now();
+        
+        // 自動ボール発射
+        if (currentTime - lastFireTime > fireInterval) {
+            fireBall();
+            lastFireTime = currentTime;
+        }
+        
+        // ブロック生成
+        if (currentTime - lastBlockSpawn > blockSpawnInterval) {
+            spawnBlockRow();
+            lastBlockSpawn = currentTime;
+        }
+        
+        // ブロック上昇
+        moveBlocksUp();
+        
+        // UI更新（角度表示のため）
+        updateUI();
+        
+        requestAnimationFrame(gameLoop);
+    }
+
+    // ゲーム開始
+    initGame();
+    Render.run(render);
+    Engine.run(engine);
+    gameLoop();
+
+    // ウィンドウリサイズ対応
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        render.canvas.width = window.innerWidth;
+        render.canvas.height = window.innerHeight;
+    });
+</script>
+```
+
+</body>
+</html>
